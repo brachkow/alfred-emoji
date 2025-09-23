@@ -6,10 +6,7 @@ An Alfred workflow for searching and copying emojis using real emoji names and s
 
 - 🔍 Search emojis by real names (from emojibase)
 - 🏷️ Search by GitHub-style shortcodes (e.g., `:smile:`)
-- 📋 Multiple copy options:
-  - **Enter**: Copy emoji to clipboard
-  - **Cmd+Enter**: Copy emoji name to clipboard
-  - **Alt+Enter**: Copy shortcode to clipboard
+- 📋 Simple copy: Press Enter to copy emoji to clipboard
 - ⚡ Fast TypeScript implementation with esbuild
 - 🎯 Smart scoring system for relevant results
 
@@ -42,11 +39,9 @@ emoji :thumbs_up:    → 👍
 emoji love           → 😍 💕 💖 💗
 ```
 
-### Keyboard Shortcuts
+### How to Use
 
-- **Enter**: Copy emoji (😄) to clipboard
-- **Cmd+Enter**: Copy emoji name ("grinning face with smiling eyes") to clipboard  
-- **Alt+Enter**: Copy shortcode (":smile:") to clipboard
+Simply press **Enter** to copy the selected emoji (😄) to your clipboard!
 
 ## Development
 

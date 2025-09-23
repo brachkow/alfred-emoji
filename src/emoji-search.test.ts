@@ -185,18 +185,6 @@ class EmojiSearch {
       text: {
         copy: emoji.emoji,
         largetype: `${emoji.emoji}\n\n${emoji.label}\n\nTags: ${tags}\nShortcodes: ${shortcodes}`
-      },
-      mods: {
-        cmd: {
-          subtitle: `Copy "${emoji.label}" to clipboard`,
-          arg: emoji.label,
-          valid: true
-        },
-        alt: {
-          subtitle: `Copy ":${emoji.shortcodes?.[0] || emoji.label.replace(/\s+/g, '_')}:" to clipboard`,
-          arg: `:${emoji.shortcodes?.[0] || emoji.label.replace(/\s+/g, '_')}:`,
-          valid: true
-        }
       }
     };
   }
@@ -322,14 +310,13 @@ describe('EmojiSearch', () => {
     expect(thumbsUpEmoji?.subtitle).toContain('yes');
   });
 
-  it('should provide correct copy alternatives', () => {
+  it('should provide correct copy functionality', () => {
     const result = emojiSearch.search('thumbs up');
     
     const thumbsUpEmoji = result.items[0];
     
     expect(thumbsUpEmoji?.arg).toBe('👍️'); // Default copy emoji
     expect(thumbsUpEmoji?.text?.copy).toBe('👍️'); // Text copy emoji
-    expect(thumbsUpEmoji?.mods?.cmd?.arg).toBe('thumbs up'); // Cmd+Enter copies label
-    expect(thumbsUpEmoji?.mods?.alt?.arg).toMatch(/^:.*:$/); // Alt+Enter copies shortcode
+    expect(thumbsUpEmoji?.mods).toBeUndefined(); // No modifiers
   });
 });

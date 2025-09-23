@@ -184,18 +184,6 @@ class EmojiSearch {
       text: {
         copy: emoji.emoji,
         largetype: `${emoji.emoji}\n\n${emoji.label}\n\nTags: ${tags}\nShortcodes: ${shortcodes}`
-      },
-      mods: {
-        cmd: {
-          subtitle: `Copy "${emoji.label}" to clipboard`,
-          arg: emoji.label,
-          valid: true
-        },
-        alt: {
-          subtitle: `Copy ":${emoji.shortcodes?.[0] || emoji.label.replace(/\s+/g, '_')}:" to clipboard`,
-          arg: `:${emoji.shortcodes?.[0] || emoji.label.replace(/\s+/g, '_')}:`,
-          valid: true
-        }
       }
     };
   }
