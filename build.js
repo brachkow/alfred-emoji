@@ -31,6 +31,11 @@ const buildScript = async () => {
       copyFileSync('./workflow/icon.png', './dist/icon.png');
     }
 
+    // Generate emoji icons
+    console.log('Generating emoji icons...');
+    const { execSync } = require('child_process');
+    execSync('node scripts/generate-emoji-icons.js', { stdio: 'inherit' });
+
     console.log('Build completed successfully!');
   } catch (error) {
     console.error('Build failed:', error);

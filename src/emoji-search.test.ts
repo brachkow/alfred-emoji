@@ -173,11 +173,15 @@ class EmojiSearch {
 
     return {
       uid: emoji.hexcode,
-      title: `${emoji.emoji} ${emoji.label}`,
+      title: emoji.label,
       subtitle,
       arg: emoji.emoji,
       autocomplete: emoji.label,
       valid: true,
+      icon: {
+        type: "default",
+        path: `icons/${emoji.hexcode}.svg`
+      },
       text: {
         copy: emoji.emoji,
         largetype: `${emoji.emoji}\n\n${emoji.label}\n\nTags: ${tags}\nShortcodes: ${shortcodes}`
@@ -231,12 +235,12 @@ describe('EmojiSearch', () => {
     
     // Should find thumbs up emoji
     const thumbsUpEmoji = result.items.find(item => 
-      item.title?.includes('👍') || 
+      item.arg?.includes('👍') || 
       item.title?.includes('thumbs up')
     );
     
     expect(thumbsUpEmoji).toBeDefined();
-    expect(thumbsUpEmoji?.title).toContain('👍');
+    expect(thumbsUpEmoji?.title).toBe('thumbs up');
     expect(thumbsUpEmoji?.arg).toBe('👍️');
   });
 
@@ -247,8 +251,8 @@ describe('EmojiSearch', () => {
     
     // Should find heart-related emojis
     const hasHeartEmoji = result.items.some(item => 
-      item.title?.includes('❤') ||
-      item.title?.includes('💙') ||
+      item.arg?.includes('❤') ||
+      item.arg?.includes('💙') ||
       item.title?.includes('heart') ||
       item.title?.includes('love')
     );
@@ -263,11 +267,11 @@ describe('EmojiSearch', () => {
     
     // Should find smiling emojis (there are many with "smile" in the label)
     const smileEmoji = result.items.find(item => 
-      item.title?.includes('smile') || item.title?.includes('😄') || item.title?.includes('😊')
+      item.title?.includes('smile') || item.arg?.includes('😄') || item.arg?.includes('😊')
     );
     
     expect(smileEmoji).toBeDefined();
-    expect(smileEmoji?.title).toMatch(/😄|😊|smile/);
+    expect(smileEmoji?.title).toMatch(/smile/);
   });
 
   it('should search by exact shortcode', () => {
@@ -276,10 +280,10 @@ describe('EmojiSearch', () => {
     expect(result.items.length).toBeGreaterThan(0);
     
     const thumbsUpEmoji = result.items.find(item => 
-      item.title?.includes('👍')
+      item.arg?.includes('👍')
     );
     expect(thumbsUpEmoji).toBeDefined();
-    expect(thumbsUpEmoji?.title).toContain('👍');
+    expect(thumbsUpEmoji?.arg).toContain('👍');
   });
 
   it('should return popular emojis when query is empty', () => {
@@ -290,8 +294,8 @@ describe('EmojiSearch', () => {
     
     // Should contain common emojis from groups 0 and 1 (smileys and people)
     const hasCommonEmojis = result.items.some(item => 
-      item.title?.includes('😀') || 
-      item.title?.includes('😊') ||
+      item.arg?.includes('😀') || 
+      item.arg?.includes('😊') ||
       item.title?.includes('grin')
     );
     
@@ -310,7 +314,7 @@ describe('EmojiSearch', () => {
     const result = emojiSearch.search('like');
     
     const thumbsUpEmoji = result.items.find(item => 
-      item.title?.includes('👍')
+      item.arg?.includes('👍')
     );
     
     expect(thumbsUpEmoji?.subtitle).toContain('like');

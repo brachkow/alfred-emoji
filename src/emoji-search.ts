@@ -172,11 +172,15 @@ class EmojiSearch {
 
     return {
       uid: emoji.hexcode,
-      title: `${emoji.emoji} ${emoji.label}`,
+      title: emoji.label,
       subtitle,
       arg: emoji.emoji,
       autocomplete: emoji.label,
       valid: true,
+      icon: {
+        type: "default",
+        path: `icons/${emoji.hexcode}.svg`
+      },
       text: {
         copy: emoji.emoji,
         largetype: `${emoji.emoji}\n\n${emoji.label}\n\nTags: ${tags}\nShortcodes: ${shortcodes}`
