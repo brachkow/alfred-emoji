@@ -73,7 +73,7 @@ class EmojiSearch {
       // Merge emoji data with shortcodes and normalize emoji field
       this.emojis = emojiData.map((emoji: EmojiData) => ({
         ...emoji,
-        emoji: emoji.emoji || emoji.unicode, // Handle both formats
+        emoji: emoji.emoji, // Use the emoji property from emojibase
         shortcodes: shortcodes[emoji.hexcode] || [],
         tags: emoji.tags || [], // Ensure tags array exists
       }));
