@@ -1,7 +1,7 @@
-import { defineConfig } from 'eslint-config-fans'
+import { defineConfig } from 'eslint-config-fans';
 
 export default defineConfig({
-  typescript: true,
-  node: true,
   prettier: true,
-})
+  typescript: true,
+  test: true,
+});
