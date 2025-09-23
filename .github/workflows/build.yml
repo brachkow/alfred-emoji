@@ -1,0 +1,63 @@
+name: Build and Test Alfred Workflow
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup mise
+      uses: jdx/mise-action@v2
+      
+    - name: Setup Node.js and pnpm with mise
+      run: mise install
+        
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+        
+    - name: Setup pnpm cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+          
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      
+    - name: Run tests
+      run: pnpm run test:run
+      
+    - name: Build workflow
+      run: pnpm run build
+      
+    - name: Package workflow
+      run: pnpm run package
+      
+    - name: Delete previous workflow artifacts
+      uses: geekyeggo/delete-artifact@v5
+      with:
+        name: alfred-emoji-workflow
+        failOnError: false
+        
+    - name: Upload Alfred workflow artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: alfred-emoji-workflow
+        path: alfred-emoji.alfredworkflow
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-output
+        path: dist/
+        retention-days: 7
