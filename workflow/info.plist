@@ -20,26 +20,6 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>9C3B4A5D-6E7F-8A9B-0C1D-2E3F4A5B6C7D</string>
-				<key>modifiers</key>
-				<integer>1048576</integer>
-				<key>modifiersubtext</key>
-				<string>Copy emoji name to clipboard</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</string>
-				<key>modifiers</key>
-				<integer>524288</integer>
-				<key>modifiersubtext</key>
-				<string>Copy shortcode to clipboard</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
 		</array>
 		<key>7B8C9D0E-1F2A-3B4C-5D6E-7F8A9B0C1D2E</key>
 		<array>
@@ -50,26 +30,6 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>9C3B4A5D-6E7F-8A9B-0C1D-2E3F4A5B6C7D</string>
-				<key>modifiers</key>
-				<integer>1048576</integer>
-				<key>modifiersubtext</key>
-				<string>Copy emoji name to clipboard</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</string>
-				<key>modifiers</key>
-				<integer>524288</integer>
-				<key>modifiersubtext</key>
-				<string>Copy shortcode to clipboard</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -198,44 +158,6 @@
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>autopaste</key>
-				<false/>
-				<key>clipboardtext</key>
-				<string>{query}</string>
-				<key>ignoredynamicplaceholders</key>
-				<false/>
-				<key>transient</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.clipboard</string>
-			<key>uid</key>
-			<string>9C3B4A5D-6E7F-8A9B-0C1D-2E3F4A5B6C7D</string>
-			<key>version</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>autopaste</key>
-				<false/>
-				<key>clipboardtext</key>
-				<string>{query}</string>
-				<key>ignoredynamicplaceholders</key>
-				<false/>
-				<key>transient</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.clipboard</string>
-			<key>uid</key>
-			<string>1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</string>
-			<key>version</key>
-			<integer>3</integer>
-		</dict>
 	</array>
 	<key>readme</key>
 	<string>Emoji Search Workflow
@@ -248,8 +170,6 @@ Type "emoji" or ";" followed by your search term to find emojis by:
 
 Actions:
 - Enter: Copy emoji to clipboard
-- Cmd+Enter: Copy emoji name to clipboard
-- Alt+Enter: Copy shortcode to clipboard
 
 Examples:
 - emoji smile → 😀 😊 😄
@@ -258,13 +178,6 @@ Examples:
 - ; &lt;3 → ❤️</string>
 	<key>uidata</key>
 	<dict>
-		<key>1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</key>
-		<dict>
-			<key>xpos</key>
-			<real>520</real>
-			<key>ypos</key>
-			<real>180</real>
-		</dict>
 		<key>4E7A4F34-6C8D-4B7F-8E3D-2A9C1B5D8F6E</key>
 		<dict>
 			<key>xpos</key>
@@ -284,14 +197,7 @@ Examples:
 			<key>xpos</key>
 			<real>520</real>
 			<key>ypos</key>
-			<real>60</real>
-		</dict>
-		<key>9C3B4A5D-6E7F-8A9B-0C1D-2E3F4A5B6C7D</key>
-		<dict>
-			<key>xpos</key>
-			<real>520</real>
-			<key>ypos</key>
-			<real>120</real>
+			<real>100</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
