@@ -9,9 +9,7 @@
     "start": "pnpm package && open alfred-emoji.alfredworkflow",
     "test:unit": "vitest",
     "test:lint": "eslint src",
-    "test:format": "prettier src",
-    "write:lint": "eslint src --fix",
-    "write:format": "prettier src --write"
+    "write:lint": "eslint src --fix"
   },
   "keywords": [
     "alfred",
