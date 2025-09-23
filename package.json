@@ -7,8 +7,11 @@
     "dev": "pnpm build && cp -r dist/* ~/Library/Application\\ Support/Alfred/Alfred.alfredpreferences/workflows/user.workflow.*/",
     "package": "pnpm build && cd dist && zip -r ../alfred-emoji.alfredworkflow .",
     "start": "pnpm package && open alfred-emoji.alfredworkflow",
-    "test": "vitest",
-    "test:run": "vitest run"
+    "test:unit": "vitest",
+    "test:lint": "eslint src",
+    "test:format": "prettier src",
+    "write:lint": "eslint src --fix",
+    "write:format": "prettier src --write"
   },
   "keywords": [
     "alfred",
@@ -26,6 +29,9 @@
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^24.5.2",
     "esbuild": "^0.25.10",
+    "eslint": "^9.36.0",
+    "eslint-config-fans": "^1.3.0",
+    "prettier": "^3.6.2",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   }
