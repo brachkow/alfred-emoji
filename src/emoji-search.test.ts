@@ -1,10 +1,8 @@
-#!/usr/bin/env node
-
+import { describe, it, expect, beforeEach } from 'vitest';
 import { readFileSync } from 'fs';
-import { join } from 'path';
 import { deburr, escapeRegExp } from 'lodash-es';
 
-// Alfred result item interface
+// Copy the interfaces and class from emoji-search.ts for testing
 interface AlfredItem {
   uid?: string;
   title: string;
@@ -219,14 +217,115 @@ class EmojiSearch {
   }
 }
 
-// Main execution
-function main(): void {
-  const query = process.argv[2] || '';
-  const emojiSearch = new EmojiSearch();
-  const result = emojiSearch.search(query);
-  
-  console.log(JSON.stringify(result, null, 2));
-}
+describe('EmojiSearch', () => {
+  let emojiSearch: EmojiSearch;
 
-// Run main if this is the entry point
-main();
+  beforeEach(() => {
+    emojiSearch = new EmojiSearch();
+  });
+
+  it('should find thumbs up emoji when searching for "like"', () => {
+    const result = emojiSearch.search('like');
+    
+    expect(result.items.length).toBeGreaterThan(0);
+    
+    // Should find thumbs up emoji
+    const thumbsUpEmoji = result.items.find(item => 
+      item.title?.includes('👍') || 
+      item.title?.includes('thumbs up')
+    );
+    
+    expect(thumbsUpEmoji).toBeDefined();
+    expect(thumbsUpEmoji?.title).toContain('👍');
+    expect(thumbsUpEmoji?.arg).toBe('👍️');
+  });
+
+  it('should find heart emojis when searching for "love"', () => {
+    const result = emojiSearch.search('love');
+    
+    expect(result.items.length).toBeGreaterThan(0);
+    
+    // Should find heart-related emojis
+    const hasHeartEmoji = result.items.some(item => 
+      item.title?.includes('❤') ||
+      item.title?.includes('💙') ||
+      item.title?.includes('heart') ||
+      item.title?.includes('love')
+    );
+    
+    expect(hasHeartEmoji).toBe(true);
+  });
+
+  it('should find smile emojis when searching for "smile"', () => {
+    const result = emojiSearch.search('smile');
+    
+    expect(result.items.length).toBeGreaterThan(0);
+    
+    // Should find smiling emojis (there are many with "smile" in the label)
+    const smileEmoji = result.items.find(item => 
+      item.title?.includes('smile') || item.title?.includes('😄') || item.title?.includes('😊')
+    );
+    
+    expect(smileEmoji).toBeDefined();
+    expect(smileEmoji?.title).toMatch(/😄|😊|smile/);
+  });
+
+  it('should search by exact shortcode', () => {
+    const result = emojiSearch.search('thumbsup');
+    
+    expect(result.items.length).toBeGreaterThan(0);
+    
+    const thumbsUpEmoji = result.items.find(item => 
+      item.title?.includes('👍')
+    );
+    expect(thumbsUpEmoji).toBeDefined();
+    expect(thumbsUpEmoji?.title).toContain('👍');
+  });
+
+  it('should return popular emojis when query is empty', () => {
+    const result = emojiSearch.search('');
+    
+    expect(result.items.length).toBeGreaterThan(0);
+    expect(result.items.length).toBeLessThanOrEqual(20);
+    
+    // Should contain common emojis from groups 0 and 1 (smileys and people)
+    const hasCommonEmojis = result.items.some(item => 
+      item.title?.includes('😀') || 
+      item.title?.includes('😊') ||
+      item.title?.includes('grin')
+    );
+    
+    expect(hasCommonEmojis).toBe(true);
+  });
+
+  it('should return "No emojis found" for invalid search', () => {
+    const result = emojiSearch.search('xyznonsensequery123');
+    
+    expect(result.items.length).toBe(1);
+    expect(result.items[0].title).toBe('No emojis found');
+    expect(result.items[0].valid).toBe(false);
+  });
+
+  it('should include tags in subtitle', () => {
+    const result = emojiSearch.search('like');
+    
+    const thumbsUpEmoji = result.items.find(item => 
+      item.title?.includes('👍')
+    );
+    
+    expect(thumbsUpEmoji?.subtitle).toContain('like');
+    expect(thumbsUpEmoji?.subtitle).toContain('good');
+    expect(thumbsUpEmoji?.subtitle).toContain('yes');
+  });
+
+  it('should provide correct copy alternatives', () => {
+    const result = emojiSearch.search('thumbs up');
+    
+    const thumbsUpEmoji = result.items[0];
+    
+    expect(thumbsUpEmoji?.arg).toBe('👍️'); // Default copy emoji
+    expect(thumbsUpEmoji?.text?.copy).toBe('👍️'); // Text copy emoji
+    expect(thumbsUpEmoji?.mods?.cmd?.arg).toBe('thumbs up'); // Cmd+Enter copies label
+    expect(thumbsUpEmoji?.mods?.alt?.arg).toMatch(/^:.*:$/); // Alt+Enter copies shortcode
+  });
+});
