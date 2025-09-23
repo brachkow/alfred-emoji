@@ -1,5 +1,6 @@
 {
   "name": "alfred-emoji",
+  "type": "module",
   "description": "Alfred workflow for searching and copying emojis",
   "main": "dist/emoji-search.js",
   "scripts": {

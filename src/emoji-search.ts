@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { deburr, escapeRegExp } from 'lodash-es';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
 
 // Alfred result item interface
 interface AlfredItem {
@@ -48,7 +48,7 @@ interface EmojiData {
   version?: number;
   tags?: string[];
   subgroup?: number;
-  skins?: any[];
+  skins?: unknown[];
 }
 
 class EmojiSearch {
@@ -65,7 +65,7 @@ class EmojiSearch {
       const shortcodes = require('emojibase-data/en/shortcodes/github.json');
 
       // Merge emoji data with shortcodes and normalize emoji field
-      this.emojis = emojiData.map((emoji: any) => ({
+      this.emojis = emojiData.map((emoji: EmojiData) => ({
         ...emoji,
         emoji: emoji.emoji || emoji.unicode, // Handle both formats
         shortcodes: shortcodes[emoji.hexcode] || [],
@@ -73,11 +73,11 @@ class EmojiSearch {
       }));
     } catch (error) {
       console.error('Failed to load emoji data:', error);
-      process.exit(1);
+      throw new Error('Failed to load emoji data');
     }
   }
 
-  private normalizeQuery(query: string): string {
+  public static normalizeQuery(query: string): string {
     if (typeof query !== 'string') {
       return '';
     }
@@ -92,7 +92,7 @@ class EmojiSearch {
         .slice(0, 20);
     }
 
-    const normalizedQuery = this.normalizeQuery(query);
+    const normalizedQuery = EmojiSearch.normalizeQuery(query);
     const queryRegex = new RegExp(escapeRegExp(normalizedQuery), 'i');
 
     const results: Array<{ emoji: EmojiData; score: number }> = [];
@@ -102,7 +102,7 @@ class EmojiSearch {
 
       // Check emoji label (main name)
       if (emoji.label) {
-        const normalizedLabel = this.normalizeQuery(emoji.label);
+        const normalizedLabel = EmojiSearch.normalizeQuery(emoji.label);
         if (normalizedLabel === normalizedQuery) {
           score += 100; // Exact match
         } else if (normalizedLabel.startsWith(normalizedQuery)) {
@@ -115,7 +115,7 @@ class EmojiSearch {
       // Check tags (emojibase includes rich tag data)
       if (emoji.tags) {
         for (const tag of emoji.tags) {
-          const normalizedTag = this.normalizeQuery(tag);
+          const normalizedTag = EmojiSearch.normalizeQuery(tag);
           if (normalizedTag === normalizedQuery) {
             score += 90; // High score for exact tag match
           } else if (normalizedTag.startsWith(normalizedQuery)) {
@@ -130,7 +130,7 @@ class EmojiSearch {
       if (emoji.shortcodes) {
         for (const shortcode of emoji.shortcodes) {
           if (typeof shortcode === 'string') {
-            const normalizedShortcode = this.normalizeQuery(shortcode);
+            const normalizedShortcode = EmojiSearch.normalizeQuery(shortcode);
             if (normalizedShortcode === normalizedQuery) {
               score += 95;
             } else if (normalizedShortcode.startsWith(normalizedQuery)) {
@@ -159,7 +159,7 @@ class EmojiSearch {
       .map((result) => result.emoji);
   }
 
-  private createAlfredItem(emoji: EmojiData): AlfredItem {
+  public static createAlfredItem(emoji: EmojiData): AlfredItem {
     const shortcodes = Array.isArray(emoji.shortcodes)
       ? emoji.shortcodes.join(', ')
       : '';
@@ -193,7 +193,9 @@ class EmojiSearch {
 
   public search(query: string): AlfredResult {
     const matchedEmojis = this.searchEmojis(query);
-    const items = matchedEmojis.map((emoji) => this.createAlfredItem(emoji));
+    const items = matchedEmojis.map((emoji) =>
+      EmojiSearch.createAlfredItem(emoji),
+    );
 
     if (items.length === 0) {
       items.push({
@@ -217,6 +219,7 @@ function main(): void {
   const emojiSearch = new EmojiSearch();
   const result = emojiSearch.search(query);
 
+  // eslint-disable-next-line no-console
   console.log(JSON.stringify(result, null, 2));
 }
 
