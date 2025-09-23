@@ -6,6 +6,7 @@
     "build": "node build.js",
     "dev": "pnpm build && cp -r dist/* ~/Library/Application\\ Support/Alfred/Alfred.alfredpreferences/workflows/user.workflow.*/",
     "package": "pnpm build && cd dist && zip -r ../alfred-emoji.alfredworkflow .",
+    "start": "pnpm package && open alfred-emoji.alfredworkflow",
     "test": "vitest",
     "test:run": "vitest run"
   },
