@@ -17,7 +17,19 @@ An Alfred workflow for searching and copying emojis using real emoji names and s
 
 1. Download `alfred-emoji.alfredworkflow`
 2. Double-click to install in Alfred
-3. Start searching with the `emoji` keyword
+3. **Configure Node.js Path**: 
+   - Open Alfred Preferences → Workflows → Emoji Search
+   - Click the `[𝒙]` button to configure variables
+   - Set your Node.js path (default: `/opt/homebrew/bin/node`)
+   - To find your path, run `which node` in Terminal
+4. Start searching with the `emoji` keyword
+
+### Common Node.js Paths:
+- **Homebrew (Apple Silicon)**: `/opt/homebrew/bin/node`
+- **Homebrew (Intel)**: `/usr/local/bin/node`
+- **System**: `/usr/bin/node`
+- **nvm**: `~/.nvm/versions/node/v20.x.x/bin/node`
+- **mise**: `~/.local/share/mise/installs/node/22.x.x/bin/node`
 
 ## Usage
 

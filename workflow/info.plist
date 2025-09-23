@@ -78,7 +78,7 @@
 				<key>runningsubtext</key>
 				<string>Searching emojis...</string>
 				<key>script</key>
-				<string>node emoji-search.js "{query}"</string>
+				<string>"{var:node_path}" emoji-search.js "{query}"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -208,7 +208,37 @@ Examples:
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
-	<array/>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>/opt/homebrew/bin/node</string>
+				<key>placeholder</key>
+				<string>/opt/homebrew/bin/node</string>
+				<key>required</key>
+				<true/>
+				<key>text</key>
+				<string>Node.js Path</string>
+				<key>type</key>
+				<string>textfield</string>
+			</dict>
+			<key>description</key>
+			<string>Path to your Node.js binary. Common paths:
+• Homebrew (Intel): /usr/local/bin/node
+• Homebrew (Apple Silicon): /opt/homebrew/bin/node
+• System: /usr/bin/node
+• nvm: ~/.nvm/versions/node/v20.x.x/bin/node
+
+To find your path, run "which node" in Terminal.</string>
+			<key>label</key>
+			<string>Node.js Path</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>node_path</string>
+		</dict>
+	</array>
 	<key>version</key>
 	<string>1.0.0</string>
 	<key>webaddress</key>
