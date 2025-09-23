@@ -78,7 +78,7 @@
 				<key>runningsubtext</key>
 				<string>Searching emojis...</string>
 				<key>script</key>
-				<string>"{var:node_path}" emoji-search.js "{query}"</string>
+				<string>"$node_path" emoji-search.js "$1"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
