@@ -17,9 +17,12 @@ const buildScript = async () => {
       platform: 'node',
       target: 'node16',
       format: 'cjs',
-      external: [],
-      minify: true,
+      external: [], // Bundle everything including JSON data
+      minify: false, // Keep readable for debugging
       sourcemap: false,
+      loader: {
+        '.json': 'json', // Handle JSON files properly
+      },
     });
 
     // Copy workflow files

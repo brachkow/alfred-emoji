@@ -59,12 +59,9 @@ class EmojiSearch {
 
   private loadEmojiData(): void {
     try {
-      // Load emoji data from emojibase
-      const emojiDataPath = require.resolve('emojibase-data/en/data.json');
-      const shortcodesPath = require.resolve('emojibase-data/en/shortcodes/github.json');
-      
-      const emojiData = JSON.parse(readFileSync(emojiDataPath, 'utf8'));
-      const shortcodes = JSON.parse(readFileSync(shortcodesPath, 'utf8'));
+      // Import emoji data directly (will be bundled by esbuild)
+      const emojiData = require('emojibase-data/en/data.json');
+      const shortcodes = require('emojibase-data/en/shortcodes/github.json');
       
       // Merge emoji data with shortcodes and normalize emoji field
       this.emojis = emojiData.map((emoji: any) => ({
