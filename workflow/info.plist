@@ -41,6 +41,39 @@
 				<false/>
 			</dict>
 		</array>
+		<key>7B8C9D0E-1F2A-3B4C-5D6E-7F8A9B0C1D2E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8F2A3C4B-5D6E-7F8A-9B0C-1D2E3F4A5B6C</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>9C3B4A5D-6E7F-8A9B-0C1D-2E3F4A5B6C7D</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Copy emoji name to clipboard</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Copy shortcode to clipboard</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>Alfred Emoji Search</string>
@@ -96,6 +129,53 @@
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
 			<string>4E7A4F34-6C8D-4B7F-8E3D-2A9C1B5D8F6E</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>;</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Searching emojis...</string>
+				<key>script</key>
+				<string>"$node_path" emoji-search.js "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Search for emojis by name, tags, or shortcodes</string>
+				<key>title</key>
+				<string>Emoji Search (;)</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>7B8C9D0E-1F2A-3B4C-5D6E-7F8A9B0C1D2E</string>
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
@@ -160,7 +240,7 @@
 	<key>readme</key>
 	<string>Emoji Search Workflow
 
-Type "emoji" followed by your search term to find emojis by:
+Type "emoji" or ";" followed by your search term to find emojis by:
 - Real emoji names (from emojibase)
 - Tags and aliases (known as names)
 - Shortcodes (GitHub style)
@@ -173,9 +253,9 @@ Actions:
 
 Examples:
 - emoji smile → 😀 😊 😄
-- emoji heart → ❤️ 💙 💚
+- ; heart → ❤️ 💙 💚
 - emoji :heart: → ❤️
-- emoji &lt;3 → ❤️</string>
+- ; &lt;3 → ❤️</string>
 	<key>uidata</key>
 	<dict>
 		<key>1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</key>
@@ -191,6 +271,13 @@ Examples:
 			<real>160</real>
 			<key>ypos</key>
 			<real>60</real>
+		</dict>
+		<key>7B8C9D0E-1F2A-3B4C-5D6E-7F8A9B0C1D2E</key>
+		<dict>
+			<key>xpos</key>
+			<real>160</real>
+			<key>ypos</key>
+			<real>140</real>
 		</dict>
 		<key>8F2A3C4B-5D6E-7F8A-9B0C-1D2E3F4A5B6C</key>
 		<dict>

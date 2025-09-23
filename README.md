@@ -19,7 +19,7 @@ An Alfred workflow for searching and copying emojis using real emoji names and s
    - Click the `[𝒙]` button to configure variables
    - Set your Node.js path (default: `/opt/homebrew/bin/node`)
    - To find your path, run `which node` in Terminal
-4. Start searching with the `emoji` keyword
+4. Start searching with the `emoji` keyword or `;`
 
 ### Common Node.js Paths:
 - **Homebrew (Apple Silicon)**: `/opt/homebrew/bin/node`
@@ -30,13 +30,13 @@ An Alfred workflow for searching and copying emojis using real emoji names and s
 
 ## Usage
 
-Type `emoji` followed by your search term:
+Type `emoji` or `;` followed by your search term:
 
 ```
 emoji smile          → 😄 😊 😃 😀
-emoji heart          → ❤️ 💙 💚 💛
+; heart              → ❤️ 💙 💚 💛
 emoji :thumbs_up:    → 👍
-emoji love           → 😍 💕 💖 💗
+; love               → 😍 💕 💖 💗
 ```
 
 ### How to Use
