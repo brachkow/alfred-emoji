@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.brachkow.alfred-emoji</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>4E7A4F34-6C8D-4B7F-8E3D-2A9C1B5D8F6E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8F2A3C4B-5D6E-7F8A-9B0C-1D2E3F4A5B6C</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>9C3B4A5D-6E7F-8A9B-0C1D-2E3F4A5B6C7D</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Copy emoji name to clipboard</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Copy shortcode to clipboard</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Alfred Emoji Search</string>
+	<key>description</key>
+	<string>Search and copy emojis with real names and known-as names</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Emoji Search</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>emoji</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Searching emojis...</string>
+				<key>script</key>
+				<string>node emoji-search.js "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Search for emojis by name, tags, or shortcodes</string>
+				<key>title</key>
+				<string>Emoji Search</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>4E7A4F34-6C8D-4B7F-8E3D-2A9C1B5D8F6E</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>8F2A3C4B-5D6E-7F8A-9B0C-1D2E3F4A5B6C</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>9C3B4A5D-6E7F-8A9B-0C1D-2E3F4A5B6C7D</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>Emoji Search Workflow
+
+Type "emoji" followed by your search term to find emojis by:
+- Real emoji names (from emojibase)
+- Tags and aliases (known as names)
+- Shortcodes (GitHub style)
+- Emoticons
+
+Actions:
+- Enter: Copy emoji to clipboard
+- Cmd+Enter: Copy emoji name to clipboard
+- Alt+Enter: Copy shortcode to clipboard
+
+Examples:
+- emoji smile → 😀 😊 😄
+- emoji heart → ❤️ 💙 💚
+- emoji :heart: → ❤️
+- emoji &lt;3 → ❤️</string>
+	<key>uidata</key>
+	<dict>
+		<key>1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</key>
+		<dict>
+			<key>xpos</key>
+			<real>520</real>
+			<key>ypos</key>
+			<real>180</real>
+		</dict>
+		<key>4E7A4F34-6C8D-4B7F-8E3D-2A9C1B5D8F6E</key>
+		<dict>
+			<key>xpos</key>
+			<real>160</real>
+			<key>ypos</key>
+			<real>60</real>
+		</dict>
+		<key>8F2A3C4B-5D6E-7F8A-9B0C-1D2E3F4A5B6C</key>
+		<dict>
+			<key>xpos</key>
+			<real>520</real>
+			<key>ypos</key>
+			<real>60</real>
+		</dict>
+		<key>9C3B4A5D-6E7F-8A9B-0C1D-2E3F4A5B6C7D</key>
+		<dict>
+			<key>xpos</key>
+			<real>520</real>
+			<key>ypos</key>
+			<real>120</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>version</key>
+	<string>1.0.0</string>
+	<key>webaddress</key>
+	<string>https://github.com/brachkow/alfred-emoji</string>
+</dict>
+</plist>
