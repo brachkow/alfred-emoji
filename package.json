@@ -9,9 +9,9 @@
     "package": "pnpm build && cd dist && zip -r ../alfred-emoji.alfredworkflow .",
     "start": "pnpm package && open alfred-emoji.alfredworkflow",
     "test:unit": "vitest",
-    "test:lint": "eslint src",
+    "test:lint": "eslint .",
     "test:types": "tsc --noEmit",
-    "write:lint": "eslint src --fix"
+    "write:lint": "eslint . --fix"
   },
   "keywords": [
     "alfred",
