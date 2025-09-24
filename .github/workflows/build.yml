@@ -1,18 +1,23 @@
-name: Build and Test Alfred Workflow
+name: Build, Test and Release Alfred Workflow
 
 on:
   push:
     branches: [main]
-  release:
-    types: [published]
+
+permissions:
+  contents: write
+  pull-requests: read
 
 jobs:
-  build-and-test:
+  build-test-release:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup mise
         uses: jdx/mise-action@v2
@@ -51,21 +56,68 @@ jobs:
       - name: Package workflow
         run: pnpm run package
 
-      - name: Delete previous workflow artifacts
-        uses: geekyeggo/delete-artifact@v5
-        with:
-          name: alfred-emoji-workflow
-          failOnError: false
+      - name: Generate version and changelog
+        id: version
+        run: |
+          # Get the current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Upload Alfred workflow artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: alfred-emoji-workflow
-          path: alfred-emoji.alfredworkflow
+          # Generate new version (patch bump)
+          NEW_VERSION=$(node -p "
+            const version = require('./package.json').version;
+            const parts = version.split('.');
+            parts[2] = String(parseInt(parts[2]) + 1);
+            parts.join('.');
+          ")
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+          # Get commit messages since last tag for changelog
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            COMMITS=$(git log --oneline --pretty=format:"- %s" | head -20)
+          else
+            COMMITS=$(git log --oneline --pretty=format:"- %s" ${LAST_TAG}..HEAD)
+          fi
+
+          # Create changelog
+          {
+            echo "## Changes"
+            echo ""
+            echo "$COMMITS"
+          } > CHANGELOG.md
+
+          echo "tag_name=v$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update package.json version
+        run: |
+          NEW_VERSION="${{ steps.version.outputs.new_version }}"
+          node -e "
+            const pkg = require('./package.json');
+            pkg.version = '$NEW_VERSION';
+            require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+      - name: Commit version bump
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add package.json
+          git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }}" || exit 0
+
+      - name: Create and push tag
+        run: |
+          git tag ${{ steps.version.outputs.tag_name }}
+          git push origin main --tags
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: build-output
-          path: dist/
-          retention-days: 7
+          tag_name: ${{ steps.version.outputs.tag_name }}
+          name: Release ${{ steps.version.outputs.tag_name }}
+          body_path: CHANGELOG.md
+          files: |
+            alfred-emoji.alfredworkflow
+          draft: false
+          prerelease: false
+          generate_release_notes: true
