@@ -1,13 +1,10 @@
-name: Build and Test Alfred Workflow
+name: Code Check
 
 on:
   push:
-    branches: [main]
-  release:
-    types: [published]
 
 jobs:
-  build-and-test:
+  code-check:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,28 +41,3 @@ jobs:
 
       - name: Run unit tests
         run: pnpm test:unit --run
-
-      - name: Build workflow
-        run: pnpm build
-
-      - name: Package workflow
-        run: pnpm run package
-
-      - name: Delete previous workflow artifacts
-        uses: geekyeggo/delete-artifact@v5
-        with:
-          name: alfred-emoji-workflow
-          failOnError: false
-
-      - name: Upload Alfred workflow artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: alfred-emoji-workflow
-          path: alfred-emoji.alfredworkflow
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: dist/
-          retention-days: 7
