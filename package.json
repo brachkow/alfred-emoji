@@ -3,6 +3,7 @@
   "type": "module",
   "description": "Alfred workflow for searching and copying emojis",
   "main": "dist/emoji-search.js",
+  "version": "1.0.0",
   "scripts": {
     "build": "pnpm test:lint && pnpm test:types && node build.js",
     "dev": "pnpm build && cp -r dist/* ~/Library/Application\\ Support/Alfred/Alfred.alfredpreferences/workflows/user.workflow.*/",
