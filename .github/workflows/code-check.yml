@@ -2,9 +2,6 @@ name: Code Check
 
 on:
   push:
-    branches: ['*']
-  pull_request:
-    branches: [main]
 
 jobs:
   code-check:
