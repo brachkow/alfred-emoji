@@ -4,7 +4,7 @@ An Alfred workflow for searching and copying emojis. It has non-strict search ba
 
 ## Installation
 
-1. Download `alfred-emoji.alfredworkflow` from artefacts of latest [build workflow run](https://github.com/brachkow/alfred-emoji/actions/workflows/build.yml) (it's on the bottom of summary tab)
+1. Download `alfred-emoji.alfredworkflow` from the latest [GitHub release](https://github.com/brachkow/alfred-emoji/releases/latest)
 2. Double-click to install in Alfred
 3. **Configure Node.js Path**: 
    - Open Alfred Preferences → Workflows → Emoji Search
