@@ -1,8 +1,5 @@
-#!/usr/bin/env node
-
 import { deburr, escapeRegExp } from 'lodash-es';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
+import type { Emoji } from 'emojibase';
 
 // Alfred result item interface
 interface AlfredItem {
@@ -40,8 +37,8 @@ interface EmojiData {
   label: string;
   group?: number;
   order?: number;
-  shortcodes: string[];
-  emoticon?: string;
+  shortcodes?: string[];
+  emoticon?: string | string[];
   hexcode: string;
   text?: string;
   type?: number;
@@ -53,24 +50,37 @@ interface EmojiData {
 
 class EmojiSearch {
   private emojis: EmojiData[] = [];
+  private initPromise: Promise<void>;
 
   constructor() {
-    this.loadEmojiData();
+    this.initPromise = this.loadEmojiData();
   }
 
-  private loadEmojiData(): void {
+  private async loadEmojiData(): Promise<void> {
     try {
       // Import emoji data directly (will be bundled by esbuild)
-      const emojiData = require('emojibase-data/en/data.json');
-      const shortcodes = require('emojibase-data/en/shortcodes/github.json');
+      const [emojiDataModule, shortcodesModule] = await Promise.all([
+        import('emojibase-data/en/data.json'),
+        import('emojibase-data/en/shortcodes/github.json'),
+      ]);
+
+      const emojiData = emojiDataModule.default;
+      const shortcodes = shortcodesModule.default;
 
       // Merge emoji data with shortcodes and normalize emoji field
-      this.emojis = emojiData.map((emoji: EmojiData) => ({
-        ...emoji,
-        emoji: emoji.emoji, // Use the emoji property from emojibase
-        shortcodes: shortcodes[emoji.hexcode] || [],
-        tags: emoji.tags || [], // Ensure tags array exists
-      }));
+      this.emojis = emojiData.map((emoji: Emoji) => {
+        const emojiShortcodes = shortcodes[emoji.hexcode];
+        return {
+          ...emoji,
+          emoji: emoji.emoji, // Use the emoji property from emojibase
+          shortcodes: Array.isArray(emojiShortcodes)
+            ? emojiShortcodes
+            : emojiShortcodes
+              ? [emojiShortcodes]
+              : [],
+          tags: emoji.tags || [], // Ensure tags array exists
+        };
+      });
     } catch (error) {
       console.error('Failed to load emoji data:', error);
       throw new Error('Failed to load emoji data');
@@ -191,7 +201,8 @@ class EmojiSearch {
     };
   }
 
-  public search(query: string): AlfredResult {
+  public async search(query: string): Promise<AlfredResult> {
+    await this.initPromise;
     const matchedEmojis = this.searchEmojis(query);
     const items = matchedEmojis.map((emoji) =>
       EmojiSearch.createAlfredItem(emoji),
@@ -213,15 +224,10 @@ class EmojiSearch {
   }
 }
 
-// Main execution
-function main(): void {
-  const query = process.argv[2] || '';
-  const emojiSearch = new EmojiSearch();
-  const result = emojiSearch.search(query);
+// Main execution (using top-level await)
+const query = process.argv[2] || '';
+const emojiSearch = new EmojiSearch();
+const result = await emojiSearch.search(query);
 
-  // eslint-disable-next-line no-console
-  console.log(JSON.stringify(result, null, 2));
-}
-
-// Run main if this is the entry point
-main();
+// eslint-disable-next-line no-console
+console.log(JSON.stringify(result, null, 2));

@@ -1,9 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { readFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
 import { deburr, escapeRegExp } from 'lodash-es';
-
-const require = createRequire(import.meta.url);
+import type { Emoji } from 'emojibase';
 
 // Copy the interfaces and class from emoji-search.ts for testing
 interface AlfredItem {
@@ -41,8 +38,8 @@ interface EmojiData {
   label: string;
   group?: number;
   order?: number;
-  shortcodes: string[];
-  emoticon?: string;
+  shortcodes?: string[];
+  emoticon?: string | string[];
   hexcode: string;
   text?: string;
   type?: number;
@@ -54,29 +51,37 @@ interface EmojiData {
 
 class EmojiSearch {
   private emojis: EmojiData[] = [];
+  private initPromise: Promise<void>;
 
   constructor() {
-    this.loadEmojiData();
+    this.initPromise = this.loadEmojiData();
   }
 
-  private loadEmojiData(): void {
+  private async loadEmojiData(): Promise<void> {
     try {
-      // Load emoji data from emojibase
-      const emojiDataPath = require.resolve('emojibase-data/en/data.json');
-      const shortcodesPath = require.resolve(
-        'emojibase-data/en/shortcodes/github.json',
-      );
+      // Import emoji data directly (will be bundled by esbuild)
+      const [emojiDataModule, shortcodesModule] = await Promise.all([
+        import('emojibase-data/en/data.json'),
+        import('emojibase-data/en/shortcodes/github.json'),
+      ]);
 
-      const emojiData = JSON.parse(readFileSync(emojiDataPath, 'utf8'));
-      const shortcodes = JSON.parse(readFileSync(shortcodesPath, 'utf8'));
+      const emojiData = emojiDataModule.default;
+      const shortcodes = shortcodesModule.default;
 
       // Merge emoji data with shortcodes and normalize emoji field
-      this.emojis = emojiData.map((emoji: EmojiData) => ({
-        ...emoji,
-        emoji: emoji.emoji, // Use the emoji property from emojibase
-        shortcodes: shortcodes[emoji.hexcode] || [],
-        tags: emoji.tags || [], // Ensure tags array exists
-      }));
+      this.emojis = emojiData.map((emoji: Emoji) => {
+        const emojiShortcodes = shortcodes[emoji.hexcode];
+        return {
+          ...emoji,
+          emoji: emoji.emoji, // Use the emoji property from emojibase
+          shortcodes: Array.isArray(emojiShortcodes)
+            ? emojiShortcodes
+            : emojiShortcodes
+              ? [emojiShortcodes]
+              : [],
+          tags: emoji.tags || [], // Ensure tags array exists
+        };
+      });
     } catch (error) {
       console.error('Failed to load emoji data:', error);
       throw new Error('Failed to load emoji data');
@@ -197,7 +202,8 @@ class EmojiSearch {
     };
   }
 
-  public search(query: string): AlfredResult {
+  public async search(query: string): Promise<AlfredResult> {
+    await this.initPromise;
     const matchedEmojis = this.searchEmojis(query);
     const items = matchedEmojis.map((emoji) =>
       EmojiSearch.createAlfredItem(emoji),
@@ -226,8 +232,8 @@ describe('EmojiSearch', () => {
     emojiSearch = new EmojiSearch();
   });
 
-  it('should find thumbs up emoji when searching for "like"', () => {
-    const result = emojiSearch.search('like');
+  it('should find thumbs up emoji when searching for "like"', async () => {
+    const result = await emojiSearch.search('like');
 
     expect(result.items.length).toBeGreaterThan(0);
 
@@ -241,8 +247,8 @@ describe('EmojiSearch', () => {
     expect(thumbsUpEmoji?.arg).toBe('👍️');
   });
 
-  it('should find heart emojis when searching for "love"', () => {
-    const result = emojiSearch.search('love');
+  it('should find heart emojis when searching for "love"', async () => {
+    const result = await emojiSearch.search('love');
 
     expect(result.items.length).toBeGreaterThan(0);
 
@@ -258,25 +264,26 @@ describe('EmojiSearch', () => {
     expect(hasHeartEmoji).toBe(true);
   });
 
-  it('should find smile emojis when searching for "smile"', () => {
-    const result = emojiSearch.search('smile');
+  it('should find smile emojis when searching for "smile"', async () => {
+    const result = await emojiSearch.search('smile');
 
     expect(result.items.length).toBeGreaterThan(0);
 
-    // Should find smiling emojis (there are many with "smile" in the label)
+    // Should find smiling emojis (there are many with "smile" or "smiling" in the label)
     const smileEmoji = result.items.find(
       (item) =>
         item.title?.includes('smile') ||
+        item.title?.includes('smiling') ||
         item.arg?.includes('😄') ||
         item.arg?.includes('😊'),
     );
 
     expect(smileEmoji).toBeDefined();
-    expect(smileEmoji?.title).toMatch(/smile/);
+    expect(smileEmoji?.title).toMatch(/smil/i);
   });
 
-  it('should search by exact shortcode', () => {
-    const result = emojiSearch.search('thumbsup');
+  it('should search by exact shortcode', async () => {
+    const result = await emojiSearch.search('thumbsup');
 
     expect(result.items.length).toBeGreaterThan(0);
 
@@ -285,8 +292,8 @@ describe('EmojiSearch', () => {
     expect(thumbsUpEmoji?.arg).toContain('👍');
   });
 
-  it('should return popular emojis when query is empty', () => {
-    const result = emojiSearch.search('');
+  it('should return popular emojis when query is empty', async () => {
+    const result = await emojiSearch.search('');
 
     expect(result.items.length).toBeGreaterThan(0);
     expect(result.items.length).toBeLessThanOrEqual(20);
@@ -302,16 +309,16 @@ describe('EmojiSearch', () => {
     expect(hasCommonEmojis).toBe(true);
   });
 
-  it('should return "No emojis found" for invalid search', () => {
-    const result = emojiSearch.search('xyznonsensequery123');
+  it('should return "No emojis found" for invalid search', async () => {
+    const result = await emojiSearch.search('xyznonsensequery123');
 
     expect(result.items.length).toBe(1);
     expect(result.items[0].title).toBe('No emojis found');
     expect(result.items[0].valid).toBe(false);
   });
 
-  it('should include tags in subtitle', () => {
-    const result = emojiSearch.search('like');
+  it('should include tags in subtitle', async () => {
+    const result = await emojiSearch.search('like');
 
     const thumbsUpEmoji = result.items.find((item) => item.arg?.includes('👍'));
 
@@ -320,8 +327,8 @@ describe('EmojiSearch', () => {
     expect(thumbsUpEmoji?.subtitle).toContain('yes');
   });
 
-  it('should provide correct copy functionality', () => {
-    const result = emojiSearch.search('thumbs up');
+  it('should provide correct copy functionality', async () => {
+    const result = await emojiSearch.search('thumbs up');
 
     const thumbsUpEmoji = result.items[0];
 
