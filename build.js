@@ -15,12 +15,15 @@ try {
     outfile: './dist/emoji-search.js',
     platform: 'node',
     target: 'node22',
-    format: 'cjs',
+    format: 'esm',
     external: [], // Bundle everything including JSON data
     minify: false, // Keep readable for debugging
     sourcemap: false,
     loader: {
       '.json': 'json', // Handle JSON files properly
+    },
+    banner: {
+      js: '#!/usr/bin/env node',
     },
   });
 
