@@ -5,10 +5,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm build          # lint + typecheck + esbuild bundle + generate icons → dist/
-pnpm dev            # build, then copy dist/* into the installed Alfred workflow folder
+pnpm build          # clean dist/, lint + typecheck + esbuild bundle + generate icons
+pnpm install:local  # build, then update the running Alfred's copy in place (scripts/install.sh)
 pnpm package        # build + zip dist/ → alfred-emoji.alfredworkflow
-pnpm start          # package + open the .alfredworkflow (installs into Alfred)
+pnpm start          # package + open the .alfredworkflow (fresh import into Alfred)
 
 pnpm test:unit             # vitest watch
 pnpm test:unit --run       # single run (what CI does)
@@ -40,7 +40,7 @@ An Alfred 5 workflow. Alfred runs a Script Filter that shells out to Node and re
 ## Gotchas
 
 - **`src/emoji-search.test.ts` copy-pastes the `EmojiSearch` class instead of importing it** — because the source module executes on import (top-level await + `console.log`). The tests therefore validate a duplicate. Any change to scoring, normalization, or `createAlfredItem` in `src/emoji-search.ts` must be mirrored into the test file or the tests silently pass against stale logic. Refactoring the source to export the class and gate the main block would remove this trap.
-- `pnpm dev` globs `user.workflow.*/` — it copies into *every* installed Alfred workflow directory if more than one matches. Verify the target before running.
-- `dist/` is gitignored and is never cleaned by `build.js`, so stale artifacts survive rebuilds (there is a leftover `emoji-search.cjs` from the old CommonJS build). Only `emoji-search.js` is the live entry point — but `pnpm package` zips the *whole* directory, so stale files ship.
+- **Local install goes through `scripts/install.sh` (`pnpm install:local`), not a hardcoded path.** Alfred's workflows live under a user-configurable sync folder — read from the `syncfolder` key of `com.runningwithcrayons.Alfred-Preferences` (this repo's author syncs to `~/Documents`), falling back to `~/Library/Application Support/Alfred/…`. The script finds *this* workflow by bundle id (`com.brachkow.alfred-emoji`), not by folder name (Alfred assigns a random UUID dir), and `rsync`s `dist/` in while **excluding `prefs.plist`** — that file holds the user's configured `node_path` (often a mise path, not the `/opt/homebrew/bin/node` default), and clobbering it breaks the workflow. JS/data changes are live immediately; `info.plist` (keyword/graph) changes need an Alfred reload.
+- `dist/` is gitignored. `build.js` wipes and recreates it on every build, so stale artifacts can't leak into a package/release/install.
 - The two Script Filters differ on `withspace`: `emoji` requires a space before its argument, `;` does not (so `;smile` works). A `;`-with-space query therefore arrives with leading whitespace — `searchEmojis` checks emptiness *after* normalization to keep `; ` returning the popular list rather than matching everything on an empty regex.
 - Pushing to `main` triggers `.github/workflows/build.yml`, which auto-bumps the patch version, tags, pushes to main, and publishes a GitHub release with the packaged workflow.
