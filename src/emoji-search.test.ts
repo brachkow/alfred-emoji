@@ -96,14 +96,17 @@ class EmojiSearch {
   }
 
   private searchEmojis(query: string): EmojiData[] {
-    if (!query || query.length < 1) {
+    const normalizedQuery = EmojiSearch.normalizeQuery(query);
+
+    // Checked after normalization: the ";" keyword takes its argument without a
+    // required space, so a bare "; " arrives here as whitespace, not "".
+    if (normalizedQuery.length < 1) {
       // Return popular emojis when no query
       return this.emojis
         .filter((emoji) => emoji.group !== undefined && emoji.group <= 1) // Smileys & People, Animals & Nature
         .slice(0, 20);
     }
 
-    const normalizedQuery = EmojiSearch.normalizeQuery(query);
     const queryRegex = new RegExp(escapeRegExp(normalizedQuery), 'i');
 
     const results: Array<{ emoji: EmojiData; score: number }> = [];
@@ -154,7 +157,7 @@ class EmojiSearch {
       }
 
       // Check emoticon
-      if (emoji.emoticon?.includes(query)) {
+      if (emoji.emoticon?.includes(normalizedQuery)) {
         score += 60;
       }
 
@@ -307,6 +310,21 @@ describe('EmojiSearch', () => {
     );
 
     expect(hasCommonEmojis).toBe(true);
+  });
+
+  it('should return popular emojis when query is only whitespace', async () => {
+    const result = await emojiSearch.search('   ');
+
+    expect(result.items.length).toBeLessThanOrEqual(20);
+  });
+
+  it('should ignore leading whitespace left by the ";" keyword', async () => {
+    const spaced = await emojiSearch.search(' smile');
+    const bare = await emojiSearch.search('smile');
+
+    expect(spaced.items.map((item) => item.arg)).toEqual(
+      bare.items.map((item) => item.arg),
+    );
   });
 
   it('should return "No emojis found" for invalid search', async () => {
