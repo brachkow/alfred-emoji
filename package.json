@@ -6,7 +6,7 @@
   "version": "1.0.3",
   "scripts": {
     "build": "pnpm test:lint && pnpm test:types && node build.js",
-    "dev": "pnpm build && cp -r dist/* ~/Library/Application\\ Support/Alfred/Alfred.alfredpreferences/workflows/user.workflow.*/",
+    "install:local": "bash scripts/install.sh",
     "package": "pnpm build && cd dist && zip -r ../alfred-emoji.alfredworkflow .",
     "start": "pnpm package && open alfred-emoji.alfredworkflow",
     "test:unit": "vitest",
