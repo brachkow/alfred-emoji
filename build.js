@@ -1,12 +1,12 @@
 import { build } from 'esbuild';
-import { copyFileSync, mkdirSync, existsSync } from 'node:fs';
+import { copyFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 
 try {
-  // Ensure dist directory exists
-  if (!existsSync('./dist')) {
-    mkdirSync('./dist', { recursive: true });
-  }
+  // Start from a clean dist so stale artifacts (e.g. a prior CommonJS build)
+  // never leak into the package, release, or a local install.
+  rmSync('./dist', { recursive: true, force: true });
+  mkdirSync('./dist', { recursive: true });
 
   // Build the main script
   await build({
